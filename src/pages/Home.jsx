@@ -153,13 +153,15 @@ Generate only the final UI component code.
   return (
     <>
       <Navbar />
-      <div className="flex items-center px-25 justify-between gap-5">
-        <div className="left rounded-xl w-[50%] h-[auto] rounded-xl py-3  rounded-xl  bg-[#141319] mt-5 p-[20px]">
-          <h3 className="text-[20px] font-semibold sp-text">
-            Ai component Generator
+
+
+      <div className="flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-20 justify-between gap-5">
+        <div className="left rounded-xl w-full  rounded-xl py-3  rounded-xl  bg-[#141319] mt-5 pr-8">
+          <h3 className="sm:text-2xl md:text-3xl lg:text-4xl text-3xl font-semibold sp-text">
+            AI Component Generator
           </h3>
-          <p className="mt-4 pad text-[gray] text-[16px]">
-            Descibe your compoent and let Ai generate it for you.
+          <p className="mt-4  text-[gray] text-2xl md:text-3xl ">
+            Descibe your component and let Ai generate it for you
           </p>
 
           <p className="font-bold text-[15px] mt-4">Framework</p>
@@ -173,18 +175,18 @@ Generate only the final UI component code.
             styles={blackStyles}
             placeholder="Select option"
           />
-          <p className="font-bold text-2xl mt-5">Describe your component</p>
+          <p className="font-bold text-2xl md:4xl p-6  mt-5">Describe your component</p>
           <textarea
-            placeholder="  Describe your component in detail and let ai will generate it for you"
+            placeholder="Prompt Here..."
             onChange={(e) => setPrompt(e.target.value)}
             value={prompt}
-            className="w-full min-h-[250px] bg-[#17171C] mt-3 rounded-xl  p-[10px]"
+            className="w-full min-h-[250px] bg-[#17171C] mt-3 rounded-xl  sm:p-2 md:"
             id=""
           ></textarea>
           <div className="flex items-center mt-4">
             <button
               onClick={getResponse}
-              className="generate flex items-center p-[15px] rounded-lg border-0 bg-gradient-to-r from bg-purple-400 to-purple-600  px-[20px] gap-10px cursor-pointer transition-all hover:opacity-[.8] "
+              className="generate flex items-center px-4 py-3 text-sm sm:text-base rounded-lg border-0 bg-gradient-to-r from bg-purple-400 to-purple-600  px-[20px] gap-10px cursor-pointer transition-all hover:opacity-[.8] "
             >
               {" "}
               <i>
@@ -201,7 +203,7 @@ Generate only the final UI component code.
             </button>
           </div>
         </div>
-        <div className="right relative left w-[50%] h-[80vh] bg-[#141319] mt-5 ">
+        <div className="right relative left w-full h-[80vh] bg-[#141319] mt-5 ">
           {!outputScreen ? (
             <>
               <div className="skeleton w-full h-full flex items-center justify-center flex-col ">
@@ -305,6 +307,11 @@ Generate only the final UI component code.
         </div>
       </div>
 
+
+
+
+
+
       {isTabOpen ? (
         <>
           <div
@@ -315,7 +322,7 @@ Generate only the final UI component code.
           </div>
           <iframe
             srcDoc={code}
-            className="container absolute left-0 top-0 right-0 bottom-0 bg-white w-screen min-h-screen overflow-auto"
+            className="container fixed inset-0 bg-white w-screen h-screen overflow-auto z-40"
           ></iframe>
         </>
       ) : (
