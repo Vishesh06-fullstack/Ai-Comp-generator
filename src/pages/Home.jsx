@@ -79,7 +79,7 @@ const protectRoute = async (callback) => {
 
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
   const ai = new GoogleGenAI({
-    apiKey: import.meta.env.VITE_GEMINI_KEY,
+    apiKey: import.meta.env.VITE_GEMINI_API_KEY,
   });
 
   async function getResponse() {
