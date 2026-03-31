@@ -11,6 +11,11 @@ import { CiShare1 } from "react-icons/ci";
 import { GoogleGenAI } from "@google/genai";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+import { handleLogin } from "../auth";
+import { useEffect } from "react";
+
 
 const Home = () => {
   const options = [
@@ -31,8 +36,29 @@ const Home = () => {
   const [code, setCode] = useState("");
   const [Loading, setLoading] = useState(false);
   const [isTabOpen, setTabOpen] = useState(false);
+  const [user , setUser] = useState(null);
   console.log(prompt);
   console.log(frameWork.value);
+
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    setUser(currentUser);
+  });
+   return () => unsubscribe();
+}, []);
+
+const protectRoute = async (callback) => {
+  if (!user) {
+    toast.error("Please login to access this feature");
+    await handleLogin(); // wait for login
+    return;
+  }
+  if (typeof callback === "function") {
+    await callback();
+  }
+};
+
+ 
 
   function extractCode(response) {
     const match = response.match(/```[\s\S]*?\n([\s\S]*?)```/);
@@ -53,7 +79,7 @@ const Home = () => {
 
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
   const ai = new GoogleGenAI({
-    apiKey: "AIzaSyAQ8Ntd-hOgpymFHUx405daNTuIvCaWtg4",
+    apiKey: import.meta.env.VITE_GEMINI_KEY,
   });
 
   async function getResponse() {
@@ -177,7 +203,7 @@ Generate only the final UI component code.
           />
           <p className="font-bold text-2xl md:4xl p-6  mt-5">Describe your component</p>
           <textarea
-            placeholder="Prompt Here..."
+            placeholder={user ? "Prompt here..." : "Please login to enter prompt..."}
             onChange={(e) => setPrompt(e.target.value)}
             value={prompt}
             className="w-full min-h-[250px] bg-[#17171C] mt-3 rounded-xl  sm:p-2 md:"
@@ -185,7 +211,9 @@ Generate only the final UI component code.
           ></textarea>
           <div className="flex items-center mt-4">
             <button
-              onClick={getResponse}
+              onClick= {() => {
+                protectRoute(getResponse)}
+              }
               className="generate flex items-center px-4 py-3 text-sm sm:text-base rounded-lg border-0 bg-gradient-to-r from bg-purple-400 to-purple-600  px-[20px] gap-10px cursor-pointer transition-all hover:opacity-[.8] "
             >
               {" "}
