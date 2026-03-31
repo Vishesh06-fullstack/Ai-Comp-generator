@@ -78,9 +78,7 @@ const protectRoute = async (callback) => {
   };
 
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
-  const ai = new GoogleGenAI({
-    apiKey: import.meta.env.VITE_GEMINI_API_KEY,
-  });
+ 
   console.log(import.meta.env.VITE_GEMINI_API_KEY);
 
   async function getResponse() {
@@ -130,7 +128,7 @@ const protectRoute = async (callback) => {
 
 
 
-const res = await fetch("http://localhost:5000/generate" , {
+const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
      method : "POST",
      headers : {
       "Content-Type" : "application/json"
