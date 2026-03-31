@@ -81,52 +81,72 @@ const protectRoute = async (callback) => {
   const ai = new GoogleGenAI({
     apiKey: import.meta.env.VITE_GEMINI_API_KEY,
   });
+  console.log(import.meta.env.VITE_GEMINI_API_KEY);
 
   async function getResponse() {
     setLoading(true);
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `
-Act as a senior frontend engineer and UI/UX designer who builds modern, production-ready web components.
+//     const response = await ai.models.generateContent({
+//       model: "gemini-2.5-flash",
+//       contents: `
+// Act as a senior frontend engineer and UI/UX designer who builds modern, production-ready web components.
 
-CRITICAL OUTPUT RULES (must follow strictly):
-1. Always return a COMPLETE HTML document with <html>, <head>, and <body>.
-2. Return ONLY the final code inside ONE Markdown fenced code block.
-3. Do NOT include explanations, comments, apologies, or extra text outside the code block.
+// CRITICAL OUTPUT RULES (must follow strictly):
+// 1. Always return a COMPLETE HTML document with <html>, <head>, and <body>.
+// 2. Return ONLY the final code inside ONE Markdown fenced code block.
+// 3. Do NOT include explanations, comments, apologies, or extra text outside the code block.
 
-STYLING & FRAMEWORK RULES:
-- If Tailwind CSS is used, you MUST include the official Tailwind CDN inside <head>.
-- If Bootstrap is used, you MUST include Bootstrap CSS and Bootstrap JS CDN inside <head>.
-- If plain HTML + CSS is used, include all CSS inside a <style> tag in <head>.
-- Do NOT assume any external setup or build tools.
-- The output MUST work directly when opened in a browser.
+// STYLING & FRAMEWORK RULES:
+// - If Tailwind CSS is used, you MUST include the official Tailwind CDN inside <head>.
+// - If Bootstrap is used, you MUST include Bootstrap CSS and Bootstrap JS CDN inside <head>.
+// - If plain HTML + CSS is used, include all CSS inside a <style> tag in <head>.
+// - Do NOT assume any external setup or build tools.
+// - The output MUST work directly when opened in a browser.
 
-DESIGN & QUALITY REQUIREMENTS:
-- Use modern UI/UX principles.
-- Apply a clean color palette, gradients where suitable, and modern typography.
-- Add smooth hover effects, subtle animations, and proper spacing.
-- Ensure full responsiveness for mobile, tablet, and desktop.
-- The component must look polished, stylish, and production-ready (not basic or raw HTML).
+// DESIGN & QUALITY REQUIREMENTS:
+// - Use modern UI/UX principles.
+// - Apply a clean color palette, gradients where suitable, and modern typography.
+// - Add smooth hover effects, subtle animations, and proper spacing.
+// - Ensure full responsiveness for mobile, tablet, and desktop.
+// - The component must look polished, stylish, and production-ready (not basic or raw HTML).
 
-ACCESSIBILITY & STRUCTURE:
-- Use semantic HTML elements where applicable.
-- Maintain clean, readable, and well-structured code.
-- Avoid unnecessary complexity.
+// ACCESSIBILITY & STRUCTURE:
+// - Use semantic HTML elements where applicable.
+// - Maintain clean, readable, and well-structured code.
+// - Avoid unnecessary complexity.
 
-USER REQUEST:
-${prompt}
+// USER REQUEST:
+// ${prompt}
 
-FRAMEWORK TO USE:
-${frameWork.value}
+// FRAMEWORK TO USE:
+// ${frameWork.value}
 
-Generate only the final UI component code.
-`,
-    });
-    console.log(response.text);
-    setCode(extractCode(response.text));
-    setOutputScreen(true);
-    setLoading(false);
+// Generate only the final UI component code.
+// `,
+//     });
+//     console.log(response.text);
+//     setCode(extractCode(response.text));
+//     setOutputScreen(true);
+//     setLoading(false);
+
+
+
+const res = await fetch("http://localhost:5000/generate" , {
+     method : "POST",
+     headers : {
+      "Content-Type" : "application/json"
+     },
+     body : JSON.stringify({
+      prompt : prompt,
+      frameWork : frameWork.value
+     })
+})
+
+  const data = await res.json();
+  setCode(extractCode(data.text));
+  setOutputScreen(true);
+  setLoading(false);
   }
+
 
   const copyTest = async () => {
     try {
@@ -183,14 +203,14 @@ Generate only the final UI component code.
 
       <div className="flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-20 justify-between gap-5">
         <div className="left rounded-xl w-full  rounded-xl py-3  rounded-xl  bg-[#141319] mt-5 pr-8">
-          <h3 className="sm:text-2xl md:text-3xl lg:text-4xl text-3xl font-semibold sp-text">
+          <h3 className="text-center text-2xl  md:text-2xl lg:text-3xl  font-semibold sp-text">
             AI Component Generator
           </h3>
-          <p className="mt-4  text-[gray] text-2xl md:text-3xl ">
-            Descibe your component and let Ai generate it for you
+          <p className="mt-4 text-[gray] lg:text-xl md:text-3xl text-center ">
+            Descibe Your Component And Let Ai Generate It For You
           </p>
 
-          <p className="font-bold text-[15px] mt-4">Framework</p>
+          <p className="font-bold text-2xl p-2 mt-4">Framework</p>
 
           <Select
             className="mt-2"
@@ -201,7 +221,7 @@ Generate only the final UI component code.
             styles={blackStyles}
             placeholder="Select option"
           />
-          <p className="font-bold text-2xl md:4xl p-6  mt-5">Describe your component</p>
+          <p className="font-bold text-2xl lg:text-3xl   mt-5">Describe Your Component</p>
           <textarea
             placeholder={user ? "Prompt here..." : "Please login to enter prompt..."}
             onChange={(e) => setPrompt(e.target.value)}
