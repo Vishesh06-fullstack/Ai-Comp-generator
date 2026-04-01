@@ -15,6 +15,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import { handleLogin } from "../auth";
 import { useEffect } from "react";
+import {motion} from "framer-motion";
 
 
 const Home = () => {
@@ -79,7 +80,7 @@ const protectRoute = async (callback) => {
 
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
  
-  console.log(import.meta.env.VITE_GEMINI_API_KEY);
+  
 
   async function getResponse() {
     setLoading(true);
@@ -143,7 +144,7 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
   setCode(extractCode(data.text));
   setOutputScreen(true);
   setLoading(false);
-  }
+}
 
 
   const copyTest = async () => {
@@ -198,15 +199,21 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
     <>
       <Navbar />
 
-
-      <div className="flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-20 justify-between gap-5">
+      <div className="overflow-hidden" >
+       <motion.div
+       initial={{ opacity: 0, y: 50 }}
+       animate={{ opacity: 1, y: 0 }}
+       transition={{ duration: 0.6 }}
+      className="flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-20 justify-between gap-5">
         <div className="left rounded-xl w-full  rounded-xl py-3  rounded-xl  bg-[#141319] mt-5 pr-8">
-          <h3 className="text-center text-2xl  md:text-2xl lg:text-3xl  font-semibold sp-text">
+          <motion.h3
+          initial={{opacity : 0}} animate={{opacity : 1}} delay={0.2}
+           className="text-center text-2xl  md:text-2xl lg:text-3xl  font-semibold sp-text">
             AI Component Generator
-          </h3>
-          <p className="mt-4 text-[gray] lg:text-xl md:text-3xl text-center ">
+          </motion.h3>
+          <motion.p initial={{opacity : 0}} animate={{opacity : 1}} delay={0.5} className="mt-4 text-[gray] lg:text-xl md:text-3xl text-center ">
             Descibe Your Component And Let Ai Generate It For You
-          </p>
+          </motion.p>
 
           <p className="font-bold text-2xl p-2 mt-4">Framework</p>
 
@@ -220,15 +227,20 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
             placeholder="Select option"
           />
           <p className="font-bold text-2xl lg:text-3xl   mt-5">Describe Your Component</p>
-          <textarea
+          <motion.textarea
+            whileFocus={{scale : 1.1}}
+            transition={{ type: "spring", stiffness: 200 }}
             placeholder={user ? "Prompt here..." : "Please login to enter prompt..."}
             onChange={(e) => setPrompt(e.target.value)}
             value={prompt}
             className="w-full min-h-[250px] bg-[#17171C] mt-3 rounded-xl  sm:p-2 md:"
             id=""
-          ></textarea>
+          ></motion.textarea>
           <div className="flex items-center mt-4">
-            <button
+            <motion.button
+
+               whileHover={{ scale: 1.1 }}
+               whileTap={{ scale: 0.95 }}
               onClick= {() => {
                 protectRoute(getResponse)}
               }
@@ -246,7 +258,7 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
                 ""
               )}
               Generate
-            </button>
+            </motion.button>
           </div>
         </div>
         <div className="right relative left w-full h-[80vh] bg-[#141319] mt-5 ">
@@ -351,7 +363,9 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
             </>
           )}
         </div>
+      </motion.div>
       </div>
+     
 
 
 

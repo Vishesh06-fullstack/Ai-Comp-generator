@@ -8,9 +8,9 @@ import { SlLogout } from "react-icons/sl";
 import { handleLogin } from "../auth";
 import { handleLogout } from "../auth";
 import { onAuthStateChanged } from "firebase/auth";
-import {auth} from "../firebase";
-import {toast} from "react-toastify";
+import { auth } from "../firebase";
 
+import { motion, scale } from "framer-motion";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
@@ -21,29 +21,33 @@ const Navbar = () => {
   }, []);
   return (
     <>
-      <div className="nav flex items-center justify-between h-[90px] border-b border-gray-800">
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="nav flex items-center justify-between h-[90px] border-b border-gray-800"
+      >
         <div className="logo ">
-          <h3 className="text-[25px] font-bold font-2xl sp-text">GenUi</h3>
+          <h3
+           initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          
+          className="text-[25px] font-bold font-2xl sp-text">GenUi</h3>
         </div>
         <div className="icons flex items-center justify-between gap-6">
-          {/* <div className="icon"><BsSunFill/></div> */}
           {!user ? (
-            <div onClick={handleLogin} className="icon cursor-pointer">
+            <motion.div whileTap={{scale : 1.1}} whileHover={{scale : 1.2}} animate={{scale: 1}} onClick={handleLogin} className="icon cursor-pointer">
               <FaUserAlt />
-            </div>
+            </motion.div>
           ) : (
-            <div
-              onClick={
-               handleLogout
-              }
-              className="icon cursor-pointer"
-            >
+            <motion.div whileTap={{scale : 1.1}} whileHover={{rotate : 20 , scale : 1.2}} onClick={handleLogout} className="icon cursor-pointer">
               <SlLogout />
-            </div>
+            </motion.div>
           )}
           <div></div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 };

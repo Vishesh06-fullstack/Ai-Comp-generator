@@ -3,6 +3,7 @@ import { GoogleAuthProvider, signInWithPopup , signOut } from "firebase/auth";
 import { toast } from "react-toastify";
 
 const provider = new GoogleAuthProvider();
+
 export const handleLogin = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
@@ -13,6 +14,7 @@ export const handleLogin = async () => {
     toast.error("Login Failed");
   }
 };
+
 
 export const handleLogout = async () => {
   try {
