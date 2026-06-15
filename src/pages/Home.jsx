@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import axios from 'axios'
 import Navbar from "../Component/Navbar";
 import Select from "react-select";
 import { BsStars } from "react-icons/bs";
 import { FaCode } from "react-icons/fa";
 import Editor from "@monaco-editor/react";
+import { IoIosCloseCircle } from "react-icons/io";
 import { IoCopy } from "react-icons/io5";
 import { PiExportBold } from "react-icons/pi";
 import { HiRefresh } from "react-icons/hi";
@@ -40,8 +42,6 @@ const Home = () => {
   const [Loading, setLoading] = useState(false);
   const [isTabOpen, setTabOpen] = useState(false);
   const [user , setUser] = useState(null);
-  console.log(prompt);
-  console.log(frameWork.value);
 
   useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -53,7 +53,10 @@ const Home = () => {
 const protectRoute = async (callback) => {
   if (!user) {
     toast.error("Please login to access this feature");
-    await handleLogin(); // wait for login
+    const loggedInUser = await handleLogin();
+    if (loggedInUser && typeof callback === "function") {
+      await callback();
+    }
     return;
   }
   if (typeof callback === "function") {
@@ -82,21 +85,23 @@ const protectRoute = async (callback) => {
 
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
  
-  
 
   async function getResponse() {
-    setLoading(true);
-
-    const res = await axios.post(BASE_URI , {
-      prompt : prompt,
-      frameWork : frameWork.value
-     })
-
-
-  const data = await res.json();
-  setCode(extractCode(data.text));
-  setOutputScreen(true);
-  setLoading(false);
+  setLoading(true);
+  try {
+    const res = await axios.post(BASE_URI, {
+      prompt: prompt,
+      frameWork: frameWork.value,
+    });
+    setCode(extractCode(res.data.text));
+    setOutputScreen(true);
+  } catch (err) {
+    console.error(err);
+    console.error("Server error:", err.response?.data || err.message);
+    toast.error("Failed to generate code. Please try again.");
+  } finally {
+    setLoading(false);
+  }
 }
 
 
@@ -160,11 +165,11 @@ const protectRoute = async (callback) => {
       className="flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-20 justify-between gap-5">
         <div className="left rounded-xl w-full  rounded-xl py-3  rounded-xl  bg-[#141319] mt-5 pr-8">
           <motion.h3
-          initial={{opacity : 0}} animate={{opacity : 1}} delay={0.2}
+          initial={{opacity : 0}} animate={{opacity : 1}}  transition={{ delay: 0.2, duration: 0.6 }}
            className="text-center text-2xl  md:text-2xl lg:text-3xl  font-semibold sp-text">
             AI Component Generator
           </motion.h3>
-          <motion.p initial={{opacity : 0}} animate={{opacity : 1}} delay={0.5} className="mt-4 text-[gray] lg:text-xl md:text-3xl text-center ">
+          <motion.p initial={{opacity : 0}} animate={{opacity : 1}} transition={{ delay: 0.2, duration: 0.6 }}  className="mt-4 text-[gray] lg:text-xl md:text-3xl text-center ">
             Descibe Your Component And Let Ai Generate It For You
           </motion.p>
 
@@ -302,7 +307,6 @@ const protectRoute = async (callback) => {
                       theme="vs-dark"
                       language="html"
                     />
-                    ;
                   </>
                 ) : (
                   <>
