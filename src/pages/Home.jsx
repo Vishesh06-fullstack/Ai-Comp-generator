@@ -19,6 +19,8 @@ import {motion} from "framer-motion";
 
 
 const Home = () => {
+
+  const BASE_URI = import.meta.env.VITE_API_URL;
   const options = [
     { value: "html-css", label: "HTML + CSS" },
     { value: "html-tailwind ", label: "HTML + Tailwind CSS" },
@@ -84,61 +86,12 @@ const protectRoute = async (callback) => {
 
   async function getResponse() {
     setLoading(true);
-//     const response = await ai.models.generateContent({
-//       model: "gemini-2.5-flash",
-//       contents: `
-// Act as a senior frontend engineer and UI/UX designer who builds modern, production-ready web components.
 
-// CRITICAL OUTPUT RULES (must follow strictly):
-// 1. Always return a COMPLETE HTML document with <html>, <head>, and <body>.
-// 2. Return ONLY the final code inside ONE Markdown fenced code block.
-// 3. Do NOT include explanations, comments, apologies, or extra text outside the code block.
-
-// STYLING & FRAMEWORK RULES:
-// - If Tailwind CSS is used, you MUST include the official Tailwind CDN inside <head>.
-// - If Bootstrap is used, you MUST include Bootstrap CSS and Bootstrap JS CDN inside <head>.
-// - If plain HTML + CSS is used, include all CSS inside a <style> tag in <head>.
-// - Do NOT assume any external setup or build tools.
-// - The output MUST work directly when opened in a browser.
-
-// DESIGN & QUALITY REQUIREMENTS:
-// - Use modern UI/UX principles.
-// - Apply a clean color palette, gradients where suitable, and modern typography.
-// - Add smooth hover effects, subtle animations, and proper spacing.
-// - Ensure full responsiveness for mobile, tablet, and desktop.
-// - The component must look polished, stylish, and production-ready (not basic or raw HTML).
-
-// ACCESSIBILITY & STRUCTURE:
-// - Use semantic HTML elements where applicable.
-// - Maintain clean, readable, and well-structured code.
-// - Avoid unnecessary complexity.
-
-// USER REQUEST:
-// ${prompt}
-
-// FRAMEWORK TO USE:
-// ${frameWork.value}
-
-// Generate only the final UI component code.
-// `,
-//     });
-//     console.log(response.text);
-//     setCode(extractCode(response.text));
-//     setOutputScreen(true);
-//     setLoading(false);
-
-
-
-const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
-     method : "POST",
-     headers : {
-      "Content-Type" : "application/json"
-     },
-     body : JSON.stringify({
+    const res = await axios.post(BASE_URI , {
       prompt : prompt,
       frameWork : frameWork.value
      })
-})
+
 
   const data = await res.json();
   setCode(extractCode(data.text));
@@ -366,12 +319,6 @@ const res = await fetch("https://backend-genai-ydkf.onrender.com/generate" , {
       </motion.div>
       </div>
      
-
-
-
-
-
-
       {isTabOpen ? (
         <>
           <div
